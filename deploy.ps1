@@ -149,6 +149,13 @@ if (-not $git) { Write-Fail 'git is not installed. Install it from https://git-s
 Write-Ok "git $((& git --version) -replace '^git version ','')"
 
 Write-Step 'Checking app files'
+# guard against a token accidentally landing in -RepoName
+if ($RepoName -notmatch '^[A-Za-z0-9._-]{1,100}$' -or $RepoName -match '^(gh[pousr]_|github_pat_)') {
+    Write-Fail "RepoName looks wrong: '$RepoName'"
+    Write-Host '        A GitHub token may have been passed by mistake.' -ForegroundColor DarkGray
+    Write-Host '        Pass a token with -Token, never as a bare argument.' -ForegroundColor DarkGray
+    exit 1
+}
 $missing = @()
 foreach ($p in $AppPaths) { if (-not (Test-Path -LiteralPath (Join-Path $Root $p))) { $missing += $p } }
 if ($missing.Count -eq 1 -and $missing[0] -eq 'DEPLOY.md') {

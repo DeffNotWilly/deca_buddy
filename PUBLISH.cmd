@@ -22,14 +22,29 @@ rem --- do we have a token? ---
 set "HASTOKEN=0"
 if exist "github-token.txt" SET "HASTOKEN=1"
 if not "%GITHUB_TOKEN%"=="" SET "HASTOKEN=1"
-if not "%~1"=="" SET "HASTOKEN=1"
 
-if "%HASTOKEN%"=="0" goto :notoken
+rem token from file or env: any extra args are forwarded as-is
+if "%HASTOKEN%"=="1" goto :gotoken
 
+rem token given directly on the command line: pass it as -Token, never bare,
+rem because a bare arg would land on the first positional parameter instead.
+if not "%~1"=="" (
+  echo   Running the deploy with the token you gave...
+  echo.
+  powershell -ExecutionPolicy Bypass -File "%~dp0deploy.ps1" -Token "%~1"
+  set "CODE=%ERRORLEVEL%"
+  goto :done
+)
+
+goto :notoken
+
+:gotoken
 echo   Running the deploy...
 echo.
 powershell -ExecutionPolicy Bypass -File "%~dp0deploy.ps1" %*
 set "CODE=%ERRORLEVEL%"
+
+:done
 echo.
 if "%CODE%"=="0" (
   echo   Done. Copy the "Live:" link it printed.
