@@ -323,14 +323,25 @@ if ($hasRemote) {
 }
 
 Write-Step 'Pushing to main'
-& git -C $Root push -u origin main --quiet 2>&1 | ForEach-Object { if ($_ -match '\S') { Write-Host "        $_" -ForegroundColor DarkGray } }
-if ($LASTEXITCODE -ne 0) {
-    Write-Fail 'push failed.'
-    Write-Host '        If it asks for credentials: username = your GitHub username,'
-    Write-Host '        password = your personal access token (NOT your GitHub password).' -ForegroundColor DarkGray
+# Authenticate on the push itself. This avoids Git Credential Manager entirely
+# (no popup, nothing saved to the Windows credential vault), and the token is
+# scrubbed from the remote URL immediately afterwards.
+$pushUrl = 'https://' + $login + ':' + [uri]::EscapeDataString($token) + '@github.com/' + $login + '/' + $RepoName + '.git'
+& git -C $Root remote set-url origin $pushUrl 2>&1 | Out-Null
+$pushOut = & git -C $Root -c 'credential.helper=' -c 'core.askPass=' push -u origin main 2>&1
+$pushCode = $LASTEXITCODE
+# scrub the token out of .git/config no matter what happened
+& git -C $Root remote set-url origin $remoteUrl 2>&1 | Out-Null
+
+$pushOut | ForEach-Object { if ("$_" -match '\S') { Write-Host "        $_" -ForegroundColor DarkGray } }
+if ($pushCode -ne 0) {
+    Write-Fail 'push failed (see the message above).'
+    Write-Host '        Common causes: the token lacks the repo scope, or the token was' -ForegroundColor DarkGray
+    Write-Host '        revoked/expired. Create a fresh one and run this again.' -ForegroundColor DarkGray
     exit 1
 }
 Write-Ok 'pushed'
+Write-Ok "origin kept token-free: $remoteUrl"
 
 # ---------------------------------------------------------------- pages
 $url = "https://$login.github.io/$RepoName/"
