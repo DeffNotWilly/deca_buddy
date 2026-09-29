@@ -36,6 +36,21 @@ if not "%~1"=="" (
   goto :done
 )
 
+rem nothing on disk - if the clipboard is holding a token, offer to use it
+powershell -NoProfile -Command "$c=(Get-Clipboard -Raw); if($c -and $c.Trim() -match '^(gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{40,})$'){exit 0}else{exit 1}" >nul 2>nul
+if errorlevel 1 goto :notoken
+
+echo   Found a GitHub token in your clipboard.
+echo.
+choice /C YN /M "   Use it?  [Y/N] "
+if errorlevel 2 goto :notoken
+echo.
+echo   Running the deploy...
+echo.
+powershell -ExecutionPolicy Bypass -File "%~dp0deploy.ps1" -FromClipboard
+set "CODE=!ERRORLEVEL!"
+goto :done
+
 goto :notoken
 
 :gotoken

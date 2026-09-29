@@ -40,6 +40,7 @@ param(
     [string]$Visibility = 'public',
     [string]$Description = 'DECA study companion - 500 practice questions, flashcards, terms quiz, interview prep, study-hour tracking.',
     [string]$Token = $env:GITHUB_TOKEN,
+    [switch]$FromClipboard,
     [switch]$SkipPages,
     [switch]$DryRun
 )
@@ -72,6 +73,15 @@ function Get-Token {
     if ($env:GITHUB_TOKEN) { return $env:GITHUB_TOKEN.Trim() }
     $f = Join-Path $Root 'github-token.txt'
     if (Test-Path -LiteralPath $f) { return (Get-Content -LiteralPath $f -Raw).Trim() }
+    if ($FromClipboard) {
+        try {
+            $c = (Get-Clipboard -Raw -ErrorAction Stop)
+            if ($c) {
+                $c = $c.Trim()
+                if ($c -match '^(gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{40,})$') { return $c }
+            }
+        } catch { }
+    }
     return $null
 }
 
