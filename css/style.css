@@ -1267,6 +1267,12 @@ body.gate-open{overflow:hidden}
 .lb-tr.me{background:var(--accent-ghost);color:var(--ink)}
 .lb-tname{font-family:inherit;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis}
 
+/* ---- custom time-limit field ---- */
+.custom-time{display:none;margin-top:14px;max-width:360px}
+.custom-time .input-label{margin-bottom:6px}
+.custom-time .gate-input{margin-top:7px;max-width:180px}
+.field-hint{font-size:11.5px;color:var(--ink-faint);line-height:1.5}
+
 /* ---- toast ---- */.toast{
   position:fixed;left:50%;bottom:26px;
   transform:translate(-50%,14px);

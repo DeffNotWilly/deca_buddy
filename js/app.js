@@ -500,7 +500,7 @@
     });
     h += '</div></div>';
     h += '<div class="card"><h3>2 &middot; Questions</h3><div class="optrow">';
-    [10, 20, 25, 40, 50].forEach(function (n) {
+    [10, 20, 25, 40, 50, 100].forEach(function (n) {
       h += '<label class="ck"><input type="radio" name="qc" value="' + n + '"' + (n === 25 ? " checked" : "") + '> ' + n + '</label>';
     });
     h += '</div></div>';
@@ -508,21 +508,62 @@
     [10, 15, 20, 25, 30].forEach(function (m) {
       h += '<label class="ck"><input type="radio" name="qm" value="' + m + '"' + (m === 20 ? " checked" : "") + '> ' + m + ' min</label>';
     });
-    h += '</div></div>';
+    h += '<label class="ck"><input type="radio" name="qm" value="custom"> Custom</label>';
+    h += '</div>';
+    h += '<div class="custom-time" id="qm-custom-wrap"><label class="input-label">Custom limit (minutes)'
+      + '<input id="qm-custom" class="gate-input" type="number" min="1" max="600" step="1" value="45" inputmode="numeric"></label>'
+      + '<p class="field-hint">1&ndash;600 minutes. Ignored when the mode is Untimed.</p></div>';
+    h += '</div>';
     h += '<div class="card"><h3>4 &middot; Mode</h3><div class="optrow">';
     h += '<label class="ck"><input type="radio" name="qmode" value="timed" checked> Timed</label>';
     h += '<label class="ck"><input type="radio" name="qmode" value="untimed"> Untimed</label>';
     h += '</div></div>';
     h += '<div class="actions"><button class="btn primary big" onclick="startExam()">Start Exam</button></div>';
     el.innerHTML = h;
+    wireCustomTime();
+  }
+
+  /* reveal the custom-minute box only while "Custom" is the picked limit */
+  function wireCustomTime() {
+    var wrap = $("qm-custom-wrap");
+    if (!wrap) return;
+    var radios = $$('#view-exams input[name=qm]');
+    function sync() {
+      var on = radios.filter(function (r) { return r.checked; })[0];
+      /* must be an explicit value: clearing to "" would fall back to the
+         .custom-time{display:none} stylesheet rule and stay invisible */
+      wrap.style.display = (on && on.value === "custom") ? "block" : "none";
+    }
+    radios.forEach(function (r) { r.addEventListener("change", sync); });
+    var box = $("qm-custom");
+    if (box) {
+      box.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") { e.preventDefault(); startExam(); }
+      });
+    }
+    sync();
   }
 
   function startExam() {
+    /* kill any timer left over from a previous run, or it will tick against
+       this new session and immediately finish an untimed exam */
+    if (runS && runS.timer) { clearInterval(runS.timer); runS.timer = null; }
     var ys = [];
     $$(".ey").forEach(function (b) { if (b.checked) ys.push(b.value); });
     if (!ys.length) { toast("Pick at least one year.", false); return; }
     var qce = $$('input[name=qc]:checked')[0], qme = $$('input[name=qm]:checked')[0], mde = $$('input[name=qmode]:checked')[0];
-    var qc = qce ? num(qce.value) : 25, qm = qme ? num(qme.value) : 20, mode = mde ? mde.value : "timed";
+    var qc = qce ? num(qce.value) : 25;
+    var mode = mde ? mde.value : "timed";
+    var tPick = qme ? String(qme.value) : "20";
+    var qm;
+    if (tPick === "custom") {
+      var ci = $("qm-custom");
+      var cv = ci ? num(ci.value) : 0;
+      if (!(cv >= 1)) { toast("Enter a custom time limit of 1 minute or more.", false); return; }
+      qm = Math.min(600, Math.round(cv));
+    } else {
+      qm = num(tPick) || 20;
+    }
     var pool = [];
     ys.forEach(function (y) {
       ((window.EXAM_BANK || {})[y] || []).forEach(function (x) {
