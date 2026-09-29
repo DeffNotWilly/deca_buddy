@@ -1,0 +1,28 @@
+# ---- DECA Study Hub: things that must never be committed ----
+
+# GitHub personal access token (used by deploy.ps1)
+github-token.txt
+token.txt
+
+# scratch output from previous debugging sessions
+nc_err.txt
+nc_exit.txt
+*.err.txt
+*.exit.txt
+
+# build artifacts
+*.zip
+dist/
+out/
+
+# editor / OS noise
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# node (this app has no dependencies, but just in case)
+node_modules/
+package-lock.json

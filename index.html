@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DECA Study Hub — Practice Exams, Flashcards & Quiz</title>
+<meta name="description" content="DECA study companion — 500 practice questions, flashcards, term quiz and interview prep. Made by WILLY.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230b1220'/><path d='M16 8l6 4v6l-6 4-6-4v-6l6-4z' fill='%234d6bff'/><circle cx='16' cy='15' r='2' fill='%23ffffff'/></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <div class="topbar-in">
+      <a class="brand" href="#/home">
+        <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#0b1220"/><path d="M16 8l6 4v6l-6 4-6-4v-6l6-4z" fill="#4d6bff"/><circle cx="16" cy="15" r="2" fill="#ffffff"/></svg>
+        <span class="name">DECA <b>Study Hub</b></span>
+        <span class="made">made by <b>WILLY</b></span>
+      </a>
+      <nav class="topnav" id="topnav">
+        <a href="#/home" class="nav-link" data-nav="home">Home</a>
+        <a href="#/exams" class="nav-link" data-nav="exams">Practice Exams</a>
+        <a href="#/flashcards" class="nav-link" data-nav="flashcards">Flashcards</a>
+        <a href="#/terms" class="nav-link" data-nav="terms">Terms Quiz</a>
+        <a href="#/interview" class="nav-link" data-nav="interview">Interview Prep</a>
+        <a href="#/leaderboard" class="nav-link" data-nav="leaderboard">Leaderboard</a>
+      </nav>
+      <button id="profile-chip" class="profile-chip" onclick="switchTo()" title="Switch profile"></button>
+    </div>
+  </header>
+
+  <main id="views" class="main" aria-live="polite">
+    <section id="view-home" class="view"></section>
+    <section id="view-exams" class="view"></section>
+    <section id="view-exams_run" class="view"></section>
+    <section id="view-flashcards" class="view"></section>
+    <section id="view-flashcards_run" class="view"></section>
+    <section id="view-terms" class="view"></section>
+    <section id="view-terms_run" class="view"></section>
+    <section id="view-interview" class="view"></section>
+    <section id="view-interview_run" class="view"></section>
+    <section id="view-progress" class="view"></section>
+    <section id="view-leaderboard" class="view"></section>
+  </main>
+
+  <div id="gate" class="gate" role="dialog" aria-label="Choose a profile"></div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <footer class="foot">
+    <div class="foot-in">
+      <span class="made">DECA Study Hub &middot; 500 practice questions &middot; 2022&ndash;2026</span>
+      <span class="by">made by <b>WILLY</b></span>
+    </div>
+  </footer>
+</div>
+
+<script src="js/data.exams.js"></script>
+<script src="js/data.terms.js"></script>
+<script src="js/data.interview.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
