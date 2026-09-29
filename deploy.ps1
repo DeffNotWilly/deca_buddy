@@ -59,7 +59,7 @@ $Root    = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ApiBase = 'https://api.github.com'
 
 # files/folders that make up the app
-$AppPaths = @('index.html', 'css', 'js', 'start.md', 'DEPLOY.md', 'deploy.ps1', 'make-zip.ps1', '.gitignore', '.gitattributes')
+$AppPaths = @('index.html', 'css', 'js', 'start.md', 'DEPLOY.md', 'deploy.ps1', 'make-zip.ps1', 'PUBLISH.cmd', 'START.cmd', '.gitignore', '.gitattributes')
 
 function Write-Step  ($m) { Write-Host "==> $m" -ForegroundColor Cyan }
 function Write-Ok    ($m) { Write-Host "    [ok] $m" -ForegroundColor Green }
