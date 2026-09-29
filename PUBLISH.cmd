@@ -32,7 +32,7 @@ if not "%~1"=="" (
   echo   Running the deploy with the token you gave...
   echo.
   powershell -ExecutionPolicy Bypass -File "%~dp0deploy.ps1" -Token "%~1"
-  set "CODE=%ERRORLEVEL%"
+  set "CODE=!ERRORLEVEL!"
   goto :done
 )
 
@@ -42,7 +42,7 @@ goto :notoken
 echo   Running the deploy...
 echo.
 powershell -ExecutionPolicy Bypass -File "%~dp0deploy.ps1" %*
-set "CODE=%ERRORLEVEL%"
+set "CODE=!ERRORLEVEL!"
 
 :done
 echo.
