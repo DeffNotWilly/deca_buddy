@@ -212,7 +212,8 @@ if ($DryRun) {
 $notIgnored = @()
 foreach ($j in @('nc_err.txt', 'nc_exit.txt', 'github-token.txt')) {
     if (-not (Test-Path -LiteralPath (Join-Path $Root $j))) { continue }
-    if ($DryRun -or -not (Test-Path -LiteralPath (Join-Path $Root '.git'))) { $notIgnored += $j; continue }
+    if (-not (Test-Path -LiteralPath (Join-Path $Root '.git'))) { $notIgnored += $j; continue }
+    # check-ignore only reads, so this is safe during a dry run too
     & git -C $Root check-ignore -q -- $j 2>$null
     if ($LASTEXITCODE -ne 0) { $notIgnored += $j }
 }
